@@ -16,9 +16,10 @@ export const useField = type => {
     value,
     onChange,
     reset,
+    inputProps: {
+      type,
+      value,
+      onChange,
+    },
   };
-};
-
-export const useAnotherHook = () => {
-  // Additional hooks can be defined here
 };
