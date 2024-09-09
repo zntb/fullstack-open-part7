@@ -39,3 +39,11 @@ Implement a view for showing a single anecdote:
 Navigating to the page showing the single anecdote is done by clicking the name of that anecdote:
 
 ![Routed Anecdotes, step 2](./assets/43.png)
+
+## 7.3: Routed Anecdotes, step3
+
+The default functionality of the creation form is quite confusing because nothing seems to be happening after creating a new anecdote using the form.
+
+Improve the functionality such that after creating a new anecdote the application transitions automatically to showing the view for all anecdotes and the user is shown a notification informing them of this successful creation for the next five seconds:
+
+![Routed Anecdotes, step 3](./assets/44.png)
