@@ -47,3 +47,51 @@ The default functionality of the creation form is quite confusing because nothin
 Improve the functionality such that after creating a new anecdote the application transitions automatically to showing the view for all anecdotes and the user is shown a notification informing them of this successful creation for the next five seconds:
 
 ![Routed Anecdotes, step 3](./assets/44.png)
+
+## Exercises 7.4.-7.8
+
+We'll continue with the app from the [exercises](https://fullstackopen.com/en/part7/custom_hooks) of the [react router](https://fullstackopen.com/en/part7/react_router) chapter.
+
+## 7.4: Anecdotes and Hooks step 1
+
+Simplify the anecdote creation form of your application with the `useField` custom hook we defined earlier.
+
+One natural place to save the custom hooks of your application is in the _/src/hooks/index.js_ file.
+
+If you use the [named export](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export#description) instead of the default export:
+
+```js
+import { useState } from 'react';
+
+export const useField = type => {
+  const [value, setValue] = useState('');
+
+  const onChange = event => {
+    setValue(event.target.value);
+  };
+
+  return {
+    type,
+    value,
+    onChange,
+  };
+};
+
+// modules can have several named exports
+
+export const useAnotherHook = () => {
+  // ...
+};
+```
+
+Then [importing](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) happens in the following way:
+
+```jsx
+import { useField } from './hooks';
+
+const App = () => {
+  // ...
+  const username = useField('text');
+  // ...
+};
+```

@@ -3,3 +3,4 @@
 All exercises are saved in a separate commit.
 
 - [Exercises 7.1-7.3](./routed-anecdotes/)
+- [Exercises 7.4](./routed-anecdotes/)
