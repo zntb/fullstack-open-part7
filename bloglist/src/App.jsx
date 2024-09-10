@@ -6,6 +6,7 @@ import {
   likeBlog,
   deleteBlog,
 } from './reducers/blogSlice';
+import { loginUser, logoutUser, setUser } from './reducers/userSlice';
 import { setNotificationWithTimeout } from './reducers/notificationSlice';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -20,51 +21,51 @@ const App = () => {
     username: '',
     password: '',
   });
-  const [user, setUser] = useState(null);
 
   const blogFormRef = useRef();
   const dispatch = useDispatch();
   const blogs = useSelector(state => state.blogs.blogs);
+  const user = useSelector(state => state.user.user);
   const status = useSelector(state => state.blogs.status);
   const error = useSelector(state => state.blogs.error);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(setUser(user));
       blogService.setToken(user.token);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (user) {
       dispatch(fetchBlogs());
     }
-  }, [user, dispatch]);
+  }, [dispatch, user]);
 
-  const handleLogin = async event => {
-    event.preventDefault();
+  const handleLogin = async credentials => {
     try {
-      const user = await loginService.login(credentials);
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      setCredentials({ username: '', password: '' });
+      await dispatch(loginUser(credentials)).unwrap();
       dispatch(
         setNotificationWithTimeout({
           message: 'Login successful',
           type: 'success',
         }),
       );
-    } catch (exception) {
-      dispatch(
-        setNotificationWithTimeout({
-          message: 'Wrong username or password',
-          type: 'error',
-        }),
-      );
+    } catch (error) {
+      dispatch(setNotificationWithTimeout({ message: error, type: 'error' }));
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    dispatch(
+      setNotificationWithTimeout({
+        message: 'Logged out successfully',
+        type: 'success',
+      }),
+    );
   };
 
   const handleChange = ({ target }) => {
@@ -72,15 +73,6 @@ const App = () => {
       ...credentials,
       [target.name]: target.value,
     });
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    blogService.setToken(null);
-    window.localStorage.removeItem('loggedBlogappUser');
-    dispatch(
-      setNotificationWithTimeout({ message: 'Logged out', type: 'success' }),
-    );
   };
 
   const addBlog = async blogObject => {
@@ -149,11 +141,7 @@ const App = () => {
     <div>
       <Notification />
       {!user ? (
-        <LoginForm
-          credentials={credentials}
-          handleChange={handleChange}
-          handleLogin={handleLogin}
-        />
+        <LoginForm handleLogin={handleLogin} />
       ) : (
         <>
           <h2>blogs</h2>

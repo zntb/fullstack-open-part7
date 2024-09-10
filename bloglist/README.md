@@ -31,3 +31,7 @@ using the internal state of React components.
 ## 7.12: Redux, Step 3
 
 Expand your solution so that it is again possible to like and delete a blog.
+
+## 7.13: Redux, Step 4
+
+Store the information about the signed-in user in the Redux store.
