@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBlogs, createBlog } from './reducers/blogSlice';
+import {
+  fetchBlogs,
+  createBlog,
+  likeBlog,
+  deleteBlog,
+} from './reducers/blogSlice';
 import { setNotificationWithTimeout } from './reducers/notificationSlice';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
@@ -98,6 +103,46 @@ const App = () => {
     }
   };
 
+  const handleLike = async blog => {
+    try {
+      await dispatch(likeBlog(blog)).unwrap();
+      dispatch(
+        setNotificationWithTimeout({
+          message: `Liked blog: "${blog.title}"`,
+          type: 'success',
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Error liking blog',
+          type: 'error',
+        }),
+      );
+    }
+  };
+
+  const handleDelete = async blog => {
+    if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
+      try {
+        await dispatch(deleteBlog(blog.id)).unwrap();
+        dispatch(
+          setNotificationWithTimeout({
+            message: `Deleted blog: "${blog.title}"`,
+            type: 'success',
+          }),
+        );
+      } catch (error) {
+        dispatch(
+          setNotificationWithTimeout({
+            message: 'Error deleting blog',
+            type: 'error',
+          }),
+        );
+      }
+    }
+  };
+
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
   return (
@@ -123,7 +168,13 @@ const App = () => {
           {status === 'failed' && <p>{error}</p>}
           {status === 'succeeded' &&
             sortedBlogs.map(blog => (
-              <Blog key={blog.id} blog={blog} user={user} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                user={user}
+                handleLike={() => handleLike(blog)}
+                handleDelete={() => handleDelete(blog)}
+              />
             ))}
         </>
       )}

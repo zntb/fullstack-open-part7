@@ -6,4 +6,4 @@ All exercises are saved in a separate commit.
 - [Exercises 7.4-7.6](./routed-anecdotes/)
 - [Exercises 7.7](./country-hook/)
 - [Exercises 7.8](./ultimate-hooks/)
-- [Exercises 7.9-7.11](./bloglist/)
+- [Exercises 7.9-7.12](./bloglist/)

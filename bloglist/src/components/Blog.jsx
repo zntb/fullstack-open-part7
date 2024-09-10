@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Blog = ({ blog, updateBlogLikes, removeBlog, user }) => {
+const Blog = ({ blog, user, handleLike, handleDelete }) => {
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const blogStyle = {
@@ -14,24 +14,6 @@ const Blog = ({ blog, updateBlogLikes, removeBlog, user }) => {
 
   const toggleDetails = () => {
     setDetailsVisible(!detailsVisible);
-  };
-
-  const handleLike = async () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user.id,
-    };
-    await updateBlogLikes(blog.id, updatedBlog);
-  };
-
-  const handleRemove = () => {
-    const confirmRemove = window.confirm(
-      `Remove blog ${blog.title} by ${blog.author}?`,
-    );
-    if (confirmRemove) {
-      removeBlog(blog.id);
-    }
   };
 
   return (
@@ -50,7 +32,7 @@ const Blog = ({ blog, updateBlogLikes, removeBlog, user }) => {
           </p>
           <p className='blog-user'>added by {blog.user.name}</p>
           {user.username === blog.user.username && (
-            <button onClick={handleRemove}>remove</button>
+            <button onClick={handleDelete}>remove</button>
           )}
         </div>
       )}
