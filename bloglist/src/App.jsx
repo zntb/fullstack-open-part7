@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { setNotificationWithTimeout } from './reducers/notificationSlice';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -14,9 +16,9 @@ const App = () => {
     password: '',
   });
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState({ message: '', type: '' });
 
   const blogFormRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
@@ -45,13 +47,19 @@ const App = () => {
       blogService.setToken(user.token);
       setUser(user);
       setCredentials({ username: '', password: '' });
-      setNotification({ message: 'Login successful', type: 'success' });
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Login successful',
+          type: 'success',
+        }),
+      );
     } catch (exception) {
-      setNotification({ message: 'Wrong username or password', type: 'error' });
-    } finally {
-      setTimeout(() => {
-        setNotification({ message: '', type: '' });
-      }, 5000);
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Wrong username or password',
+          type: 'error',
+        }),
+      );
     }
   };
 
@@ -66,10 +74,9 @@ const App = () => {
     setUser(null);
     blogService.setToken(null);
     window.localStorage.removeItem('loggedBlogappUser');
-    setNotification({ message: 'Logged out', type: 'success' });
-    setTimeout(() => {
-      setNotification({ message: '', type: '' });
-    }, 5000);
+    dispatch(
+      setNotificationWithTimeout({ message: 'Logged out', type: 'success' }),
+    );
   };
 
   const addBlog = async blogObject => {
@@ -77,16 +84,19 @@ const App = () => {
       const blog = await blogService.create(blogObject);
       setBlogs(blogs.concat(blog));
       blogFormRef.current.toggleVisibility();
-      setNotification({
-        message: `A new blog "${blog.title}" by ${blog.author} added`,
-        type: 'success',
-      });
+      dispatch(
+        setNotificationWithTimeout({
+          message: `A new blog "${blog.title}" by ${blog.author} added`,
+          type: 'success',
+        }),
+      );
     } catch (exception) {
-      setNotification({ message: 'Error adding blog', type: 'error' });
-    } finally {
-      setTimeout(() => {
-        setNotification({ message: '', type: '' });
-      }, 5000);
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Error adding blog',
+          type: 'error',
+        }),
+      );
     }
   };
 
@@ -95,10 +105,12 @@ const App = () => {
       const updatedBlog = await blogService.update(id, blogObject);
       setBlogs(blogs.map(blog => (blog.id !== id ? blog : updatedBlog)));
     } catch (exception) {
-      setNotification({ message: 'Error updating likes', type: 'error' });
-      setTimeout(() => {
-        setNotification({ message: '', type: '' });
-      }, 5000);
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Error updating likes',
+          type: 'error',
+        }),
+      );
     }
   };
 
@@ -106,16 +118,19 @@ const App = () => {
     try {
       await blogService.remove(id);
       setBlogs(blogs.filter(blog => blog.id !== id));
-      setNotification({
-        message: 'Blog removed successfully',
-        type: 'success',
-      });
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Blog removed successfully',
+          type: 'success',
+        }),
+      );
     } catch (exception) {
-      setNotification({ message: 'Error removing blog', type: 'error' });
-    } finally {
-      setTimeout(() => {
-        setNotification({ message: '', type: '' });
-      }, 5000);
+      dispatch(
+        setNotificationWithTimeout({
+          message: 'Error removing blog',
+          type: 'error',
+        }),
+      );
     }
   };
 
@@ -123,7 +138,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={notification.message} type={notification.type} />
+      <Notification />
       {!user ? (
         <LoginForm
           credentials={credentials}
