@@ -1,42 +1,48 @@
-import { useRef, useEffect, useState } from 'react';
-import Blog from './components/Blog';
+import { useState, useRef, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from './services/blogs';
 import loginService from './services/login';
-import LoginForm from './components/LoginForm';
+import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
+import LoginForm from './components/LoginForm';
 import { useNotification } from './context/NotificationContext';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [user, setUser] = useState(null);
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
   });
-  const [user, setUser] = useState(null);
+  const blogFormRef = useRef();
+  const queryClient = useQueryClient();
   const { setNotification } = useNotification();
 
-  const blogFormRef = useRef();
+  const {
+    data: blogs,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    enabled: !!user,
+  });
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      const fetchBlogs = async () => {
-        const fetchedBlogs = await blogService.getAll();
-        setBlogs(fetchedBlogs);
-      };
-      fetchBlogs();
-    }
-  }, [user]);
+  const addBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: newBlog => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      blogFormRef.current.toggleVisibility();
+      setNotification(
+        `A new blog "${newBlog.title}" by ${newBlog.author} added`,
+        'success',
+      );
+    },
+    onError: () => {
+      setNotification('Error adding blog', 'error');
+    },
+  });
 
   const handleLogin = async event => {
     event.preventDefault();
@@ -47,7 +53,7 @@ const App = () => {
       setUser(user);
       setCredentials({ username: '', password: '' });
       setNotification('Login successful', 'success');
-    } catch (exception) {
+    } catch (error) {
       setNotification('Wrong username or password', 'error');
     }
   };
@@ -59,40 +65,33 @@ const App = () => {
     setNotification('Logged out', 'success');
   };
 
-  const addBlog = async blogObject => {
-    try {
-      const blog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(blog));
-      blogFormRef.current.toggleVisibility();
-      setNotification(
-        `A new blog "${blog.title}" by ${blog.author} added`,
-        'success',
-      );
-    } catch (exception) {
-      setNotification('Error adding blog', 'error');
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
     }
+  }, []);
+
+  const handleChange = event => {
+    const { name, value } = event.target;
+    setCredentials({ ...credentials, [name]: value });
   };
 
-  const updateBlogLikes = async (id, blogObject) => {
-    try {
-      const updatedBlog = await blogService.update(id, blogObject);
-      setBlogs(blogs.map(blog => (blog.id !== id ? blog : updatedBlog)));
-    } catch (exception) {
-      setNotification('Error updating likes', 'error');
-    }
+  const addBlog = blogObject => {
+    addBlogMutation.mutate(blogObject);
   };
 
-  const removeBlog = async id => {
-    try {
-      await blogService.remove(id);
-      setBlogs(blogs.filter(blog => blog.id !== id));
-      setNotification('Blog removed successfully', 'success');
-    } catch (exception) {
-      setNotification('Error removing blog', 'error');
-    }
-  };
+  if (isLoading) {
+    return <div>Loading blogs...</div>;
+  }
 
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+  if (isError) {
+    return <div>Error fetching blogs</div>;
+  }
+
+  const sortedBlogs = blogs ? [...blogs].sort((a, b) => b.likes - a.likes) : [];
 
   return (
     <div>
@@ -100,29 +99,20 @@ const App = () => {
       {!user ? (
         <LoginForm
           credentials={credentials}
-          handleChange={({ target }) =>
-            setCredentials({ ...credentials, [target.name]: target.value })
-          }
+          handleChange={handleChange}
           handleLogin={handleLogin}
         />
       ) : (
         <>
           <h2>blogs</h2>
           <p>
-            {user.name} logged in
-            <button onClick={handleLogout}>logout</button>
+            {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
           <Togglable buttonLabel='create new blog' ref={blogFormRef}>
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {sortedBlogs.map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              updateBlogLikes={updateBlogLikes}
-              removeBlog={removeBlog}
-              user={user}
-            />
+            <Blog key={blog.id} blog={blog} user={user} />
           ))}
         </>
       )}

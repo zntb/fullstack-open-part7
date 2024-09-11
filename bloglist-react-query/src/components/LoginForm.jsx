@@ -5,24 +5,22 @@ const LoginForm = ({ credentials, handleChange, handleLogin }) => (
       <div>
         username
         <input
-          type="text"
-          data-testid="username"
+          type='text'
           value={credentials.username}
-          name="username"
+          name='username'
           onChange={handleChange}
         />
       </div>
       <div>
         password
         <input
-          type="password"
-          data-testid="password"
+          type='password'
           value={credentials.password}
-          name="password"
+          name='password'
           onChange={handleChange}
         />
       </div>
-      <button type="submit">login</button>
+      <button type='submit'>login</button>
     </form>
   </div>
 );
