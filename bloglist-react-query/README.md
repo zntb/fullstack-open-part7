@@ -15,3 +15,7 @@ using the internal state of React components.
 ## 7.12: React Query and Context step 3
 
 Expand your solution so that it is again possible to like and delete a blog.
+
+## 7.13: React Query and Context step 4
+
+Use the useReducer-hook and context to manage the data for the logged in user.
