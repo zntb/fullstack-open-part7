@@ -44,6 +44,28 @@ const App = () => {
     },
   });
 
+  const likeBlogMutation = useMutation({
+    mutationFn: ({ id, updatedBlog }) => blogService.update(id, updatedBlog),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      setNotification('Blog liked successfully', 'success');
+    },
+    onError: () => {
+      setNotification('Error liking blog', 'error');
+    },
+  });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: id => blogService.remove(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      setNotification('Blog deleted successfully', 'success');
+    },
+    onError: () => {
+      setNotification('Error deleting blog', 'error');
+    },
+  });
+
   const handleLogin = async event => {
     event.preventDefault();
     try {
@@ -83,6 +105,20 @@ const App = () => {
     addBlogMutation.mutate(blogObject);
   };
 
+  const likeBlog = blog => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    likeBlogMutation.mutate({ id: blog.id, updatedBlog });
+  };
+
+  const deleteBlog = id => {
+    const confirmRemove = window.confirm(
+      'Are you sure you want to delete this blog?',
+    );
+    if (confirmRemove) {
+      deleteBlogMutation.mutate(id);
+    }
+  };
+
   if (isLoading) {
     return <div>Loading blogs...</div>;
   }
@@ -112,7 +148,13 @@ const App = () => {
             <BlogForm createBlog={addBlog} />
           </Togglable>
           {sortedBlogs.map(blog => (
-            <Blog key={blog.id} blog={blog} user={user} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog}
+            />
           ))}
         </>
       )}
