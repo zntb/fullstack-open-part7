@@ -157,45 +157,44 @@ const App = () => {
   return (
     <Router>
       <Notification />
-      <div>
-        {!user ? (
-          <LoginForm
-            credentials={credentials}
-            handleChange={handleChange}
-            handleLogin={handleLogin}
-          />
-        ) : (
-          <>
-            <h2>blogs</h2>
-            <div>
-              {user.name} logged in{' '}
-              <div style={{ marginTop: 20, marginBottom: 20 }}>
-                <button onClick={handleLogout}>logout</button>
-              </div>
-            </div>
-          </>
+      <nav>
+        <Link style={{ marginRight: 10 }} to='/'>
+          Blogs
+        </Link>
+        <Link to='/users'>Users</Link>
+        {user && (
+          <span style={{ marginLeft: 10 }}>
+            {user.name} logged in <button onClick={handleLogout}>logout</button>
+          </span>
         )}
-      </div>
+      </nav>
       <Routes>
         <Route
           path='/'
           element={
-            <>
-              {user && (
+            !user ? (
+              <LoginForm
+                credentials={credentials}
+                handleChange={handleChange}
+                handleLogin={handleLogin}
+              />
+            ) : (
+              <>
+                <h2>blog app</h2>
                 <Togglable buttonLabel='create new blog' ref={blogFormRef}>
                   <BlogForm createBlog={addBlog} />
                 </Togglable>
-              )}
-              {sortedBlogs.map(blog => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  user={user}
-                  likeBlog={likeBlog}
-                  deleteBlog={deleteBlog}
-                />
-              ))}
-            </>
+                {sortedBlogs.map(blog => (
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    user={user}
+                    likeBlog={likeBlog}
+                    deleteBlog={deleteBlog}
+                  />
+                ))}
+              </>
+            )
           }
         />
         <Route path='/users' element={<Users />} />

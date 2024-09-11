@@ -81,3 +81,9 @@ in the view that lists all of the blog posts.
 After you're done with this exercise, the functionality that was implemented in
 exercise 5.7 is no longer necessary. Clicking a blog post no longer needs to
 expand the item in the list and display the details of the blog post.
+
+## 7.17: Navigation
+
+Implement a navigation menu for the application:
+
+![navigation menu](./assets/47.png)

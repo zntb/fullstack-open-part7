@@ -8,4 +8,4 @@ All exercises are saved in a separate commit.
 - [Exercises 7.8](./ultimate-hooks/)
 - [Exercises 7.9-7.13-Redux](./bloglist-redux/)
 - [Exercises 7.10-7.13-React Query and Context](./bloglist-react-query/)
-- [Exercise 7.14-7.16](./bloglist-react-query/)
+- [Exercise 7.14-7.17](./bloglist-react-query/)
