@@ -19,3 +19,10 @@ Expand your solution so that it is again possible to like and delete a blog.
 ## 7.13: React Query and Context step 4
 
 Use the useReducer-hook and context to manage the data for the logged in user.
+
+## 7.14: Users view
+
+Implement a view to the application that displays all of the basic information
+related to users:
+
+![users view](./assets/41.png)

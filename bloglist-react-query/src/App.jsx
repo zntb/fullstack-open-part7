@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Blog from './components/Blog';
+import Users from './components/Users';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
@@ -151,35 +153,52 @@ const App = () => {
   const sortedBlogs = blogs ? [...blogs].sort((a, b) => b.likes - a.likes) : [];
 
   return (
-    <div>
+    <Router>
       <Notification />
-      {!user ? (
-        <LoginForm
-          credentials={credentials}
-          handleChange={handleChange}
-          handleLogin={handleLogin}
+      <div>
+        {!user ? (
+          <LoginForm
+            credentials={credentials}
+            handleChange={handleChange}
+            handleLogin={handleLogin}
+          />
+        ) : (
+          <>
+            <h2>blogs</h2>
+            <div>
+              {user.name} logged in{' '}
+              <div style={{ marginTop: 20, marginBottom: 20 }}>
+                <button onClick={handleLogout}>logout</button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <>
+              {user && (
+                <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+                  <BlogForm createBlog={addBlog} />
+                </Togglable>
+              )}
+              {sortedBlogs.map(blog => (
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  user={user}
+                  likeBlog={likeBlog}
+                  deleteBlog={deleteBlog}
+                />
+              ))}
+            </>
+          }
         />
-      ) : (
-        <>
-          <h2>blogs</h2>
-          <p>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </p>
-          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-          {sortedBlogs.map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              likeBlog={likeBlog}
-              deleteBlog={deleteBlog}
-            />
-          ))}
-        </>
-      )}
-    </div>
+        <Route path='/users' element={<Users />} />
+      </Routes>
+    </Router>
   );
 };
 
