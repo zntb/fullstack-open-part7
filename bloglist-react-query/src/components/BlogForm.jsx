@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const BlogForm = ({ createBlog }) => {
-  const [newBlog, setNewBlog] = useState({ title: "", author: "", url: "" });
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });
 
-  const addBlog = (event) => {
+  const addBlog = event => {
     event.preventDefault();
     createBlog(newBlog);
-    setNewBlog({ title: "", author: "", url: "" });
+    setNewBlog({ title: '', author: '', url: '' });
   };
 
   const handleBlogChange = ({ target }) => {
@@ -21,39 +21,39 @@ const BlogForm = ({ createBlog }) => {
       <h2>create new</h2>
       <form onSubmit={addBlog}>
         <div>
-          <label htmlFor="title">title:</label>
+          <label htmlFor='title'>title:</label>
           <input
-            data-testid="title"
-            type="text"
-            id="title"
+            data-testid='title'
+            type='text'
+            id='title'
             value={newBlog.title}
-            name="title"
+            name='title'
             onChange={handleBlogChange}
           />
         </div>
         <div>
-          <label htmlFor="author">author:</label>
+          <label htmlFor='author'>author:</label>
           <input
-            data-testid="author"
-            type="text"
-            id="author"
+            data-testid='author'
+            type='text'
+            id='author'
             value={newBlog.author}
-            name="author"
+            name='author'
             onChange={handleBlogChange}
           />
         </div>
         <div>
-          <label htmlFor="url">url:</label>
+          <label htmlFor='url'>url:</label>
           <input
-            data-testid="url"
-            type="text"
-            id="url"
+            data-testid='url'
+            type='text'
+            id='url'
             value={newBlog.url}
-            name="url"
+            name='url'
             onChange={handleBlogChange}
           />
         </div>
-        <button type="submit">create</button>
+        <button type='submit'>create</button>
       </form>
     </div>
   );

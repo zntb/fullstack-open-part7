@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Blog from './components/Blog';
+import BlogDetail from './components/BlogDetail';
 import Users from './components/Users';
 import User from './components/User';
 import BlogForm from './components/BlogForm';
@@ -199,6 +200,16 @@ const App = () => {
         />
         <Route path='/users' element={<Users />} />
         <Route path='/users/:id' element={<User />} />
+        <Route
+          path='/blogs/:id'
+          element={
+            <BlogDetail
+              user={user}
+              likeBlogMutation={likeBlogMutation}
+              deleteBlogMutation={deleteBlogMutation}
+            />
+          }
+        />
       </Routes>
     </Router>
   );

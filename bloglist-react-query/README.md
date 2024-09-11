@@ -65,3 +65,19 @@ const User = () => {
   )
 }
 ```
+
+## 7.16: Blog View
+
+Implement a separate view for blog posts. You can model the layout of your view
+after the following example:
+
+![blog view](./assets/45.png)
+
+Users should be able to access this view by clicking the name of the blog post
+in the view that lists all of the blog posts.
+
+![blog view](./assets/46.png)
+
+After you're done with this exercise, the functionality that was implemented in
+exercise 5.7 is no longer necessary. Clicking a blog post no longer needs to
+expand the item in the list and display the details of the blog post.
