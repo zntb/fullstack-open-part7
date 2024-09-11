@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import userService from '../services/users';
 import { useNotification } from '../context/NotificationContext';
+import { Link } from 'react-router-dom';
 
 const Users = () => {
   const { setNotification } = useNotification();
@@ -38,7 +39,9 @@ const Users = () => {
         <tbody>
           {users.map(user => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}

@@ -5,6 +5,7 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 import Blog from './components/Blog';
 import Users from './components/Users';
+import User from './components/User';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
 import Togglable from './components/Togglable';
@@ -197,6 +198,7 @@ const App = () => {
           }
         />
         <Route path='/users' element={<Users />} />
+        <Route path='/users/:id' element={<User />} />
       </Routes>
     </Router>
   );

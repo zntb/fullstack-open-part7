@@ -26,3 +26,42 @@ Implement a view to the application that displays all of the basic information
 related to users:
 
 ![users view](./assets/41.png)
+
+## 7.15: Individual User View
+
+Implement a view for individual users that displays all of the blog posts added
+by that user:
+
+![individual user view](./assets/44.png)
+
+You can access this view by clicking the name of the user in the view that lists
+all users:
+
+![users view](./assets/43.png)
+
+**NB:** you will almost certainly stumble across the following error message
+during this exercise:
+
+![error message](./assets/42ea.png)
+
+The error message will occur if you refresh the individual user page.
+
+The cause of the issue is that, when we navigate directly to the page of an
+individual user, the React application has not yet received the data from the
+backend. One solution for this problem is to use conditional rendering:
+
+```jsx
+const User = () => {
+  const user = ...
+
+  if (!user) {
+    return null
+  }
+
+  return (
+    <div>
+      // ...
+    </div>
+  )
+}
+```
