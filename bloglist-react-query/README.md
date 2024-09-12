@@ -102,3 +102,8 @@ that the application receives from the backend.
 
 An appropriate mechanism for adding comments to a blog post would be an HTTP
 POST request to the _api/blogs/:id/comments_ endpoint.
+
+7.19: Comments, step 2 Extend your application so that users can add comments to
+blog posts from the frontend:
+
+![commenting](./assets/49.png)

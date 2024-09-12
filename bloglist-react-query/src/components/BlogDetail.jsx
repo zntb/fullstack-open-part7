@@ -58,6 +58,18 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
     }
   };
 
+  const handleAddComment = async event => {
+    event.preventDefault();
+    if (comment.trim()) {
+      try {
+        await addCommentMutation.mutateAsync(comment);
+        setComment('');
+      } catch (error) {
+        console.error('Error adding comment:', error);
+      }
+    }
+  };
+
   return (
     <div>
       <h2>
@@ -78,6 +90,16 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
           <li key={index}>{comment}</li>
         ))}
       </ul>
+
+      <form onSubmit={handleAddComment}>
+        <input
+          type='text'
+          value={comment}
+          onChange={e => setComment(e.target.value)}
+          placeholder='Add a comment'
+        />
+        <button type='submit'>Add comment</button>
+      </form>
     </div>
   );
 };
