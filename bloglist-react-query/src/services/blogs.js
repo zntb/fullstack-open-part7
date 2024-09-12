@@ -13,7 +13,7 @@ const getAll = async () => {
 };
 
 const getBlogById = async id => {
-  const response = await axios.get(`${baseUrl}/${id}`);
+  const response = await axios.get(`/api/blogs/${id}`);
   return response.data;
 };
 
@@ -40,4 +40,11 @@ const remove = async id => {
   return response.data;
 };
 
-export default { getAll, getBlogById, create, setToken, update, remove };
+export default {
+  getAll,
+  getBlogById,
+  create,
+  setToken,
+  update,
+  remove,
+};

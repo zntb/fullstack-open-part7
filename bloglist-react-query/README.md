@@ -87,3 +87,18 @@ expand the item in the list and display the details of the blog post.
 Implement a navigation menu for the application:
 
 ![navigation menu](./assets/47.png)
+
+## 7.18: Comments, step 1
+
+Implement the functionality for commenting the blog posts:
+
+![commenting](./assets/48.png)
+
+Comments should be anonymous, meaning that they are not associated with the user
+who left the comment.
+
+In this exercise, it is enough for the frontend to only display the comments
+that the application receives from the backend.
+
+An appropriate mechanism for adding comments to a blog post would be an HTTP
+POST request to the _api/blogs/:id/comments_ endpoint.

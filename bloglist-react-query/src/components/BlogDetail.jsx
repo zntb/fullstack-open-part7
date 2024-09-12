@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import blogService from '../services/blogs';
 
 const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [comment, setComment] = useState('');
 
   const {
     data: blog,
@@ -14,6 +16,16 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
   } = useQuery({
     queryKey: ['blog', id],
     queryFn: () => blogService.getBlogById(id),
+  });
+
+  const addCommentMutation = useMutation({
+    mutationFn: newComment => blogService.addComment(id, newComment),
+    onSuccess: updatedBlog => {
+      queryClient.setQueryData(['blog', id], updatedBlog);
+    },
+    onError: error => {
+      console.error('Error adding comment:', error);
+    },
   });
 
   if (isLoading) {
@@ -59,6 +71,13 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
       {user.username === blog.user.username && (
         <button onClick={handleDelete}>delete</button>
       )}
+
+      <h3>Comments</h3>
+      <ul>
+        {(blog.comments || []).map((comment, index) => (
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
     </div>
   );
 };
