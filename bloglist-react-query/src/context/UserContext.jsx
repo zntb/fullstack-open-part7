@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useReducer, useEffect } from 'react';
 
 const initialUserState = null;
 
@@ -23,12 +23,22 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const [user, dispatch] = useReducer(userReducer, initialUserState);
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      dispatch({ type: USER_LOGIN, payload: user });
+    }
+  }, []);
+
   const loginUser = userData => {
     dispatch({ type: USER_LOGIN, payload: userData });
+    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(userData));
   };
 
   const logoutUser = () => {
     dispatch({ type: USER_LOGOUT });
+    window.localStorage.removeItem('loggedBlogappUser');
   };
 
   return (

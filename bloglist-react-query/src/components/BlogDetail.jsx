@@ -21,7 +21,10 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
   const addCommentMutation = useMutation({
     mutationFn: newComment => blogService.addComment(id, newComment),
     onSuccess: updatedBlog => {
-      queryClient.setQueryData(['blog', id], updatedBlog);
+      queryClient.setQueryData(['blog', id], old => ({
+        ...old,
+        comments: updatedBlog.comments,
+      }));
     },
     onError: error => {
       console.error('Error adding comment:', error);

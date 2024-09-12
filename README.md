@@ -2,6 +2,8 @@
 
 All exercises are saved in a separate commit.
 
+[Backend code repository](https://github.com/zntb/fullstack-open-part5/tree/main/bloglist-backend)
+
 - [Exercises 7.1-7.3](./routed-anecdotes/)
 - [Exercises 7.4-7.6](./routed-anecdotes/)
 - [Exercises 7.7](./country-hook/)
