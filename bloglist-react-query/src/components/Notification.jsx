@@ -1,22 +1,24 @@
 import { useNotification } from '../context/NotificationContext';
+import styled from 'styled-components';
+
+const NotificationWrapper = styled.div`
+  padding: 10px;
+  color: ${({ type }) => (type === 'error' ? 'red' : 'green')};
+  background-color: lightgrey;
+  border: 2px solid ${({ type }) => (type === 'error' ? 'red' : 'green')};
+  border-radius: 5px;
+  margin-bottom: 10px;
+`;
 
 const Notification = () => {
   const { notification } = useNotification();
 
   if (!notification.message) return null;
 
-  const notificationStyle = {
-    padding: '10px',
-    color: notification.type === 'error' ? 'red' : 'green',
-    backgroundColor: 'lightgrey',
-    border: `2px solid ${notification.type === 'error' ? 'red' : 'green'}`,
-    borderRadius: '5px',
-    marginBottom: '10px',
-  };
   return (
-    <div data-testid='notification' style={notificationStyle}>
+    <NotificationWrapper type={notification.type}>
       {notification.message}
-    </div>
+    </NotificationWrapper>
   );
 };
 

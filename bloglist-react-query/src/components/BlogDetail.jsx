@@ -1,7 +1,72 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import styled from 'styled-components';
 import blogService from '../services/blogs';
+import LoadingSpinner from './LoadingSpinner';
+
+const BlogDetailContainer = styled.div`
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const BlogLikes = styled.div`
+  margin: 10px 0 10px 0;
+`;
+
+const BlogAuthor = styled.div`
+  margin: 10px 0 10px 0;
+`;
+
+const CommentList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+const CommentInput = styled.input`
+  width: 98%;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+
+  &:focus {
+    outline: none;
+    border: 1px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  &::placeholder {
+    color: #ccc;
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    margin: 10px 0 10px -6px;
+  }
+`;
+
+const CommentItem = styled.li`
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+`;
+
+const ActionButton = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  margin: 0 10px 0 10px;
+  cursor: pointer;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
 
 const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
   const { id } = useParams();
@@ -32,7 +97,7 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
   });
 
   if (isLoading) {
-    return <div>Loading blog...</div>;
+    return <LoadingSpinner />;
   }
 
   if (isError || !blog) {
@@ -74,36 +139,37 @@ const BlogDetail = ({ user, likeBlogMutation, deleteBlogMutation }) => {
   };
 
   return (
-    <div>
+    <BlogDetailContainer>
       <h2>
-        {blog.title} {blog.author}
+        {blog.title} by {blog.author}
       </h2>
       <a href={blog.url}>{blog.url}</a>
-      <div>
-        {blog.likes} likes <button onClick={handleLike}>like</button>
-      </div>
-      <div>added by {blog.user.name}</div>
+      <BlogLikes>
+        {blog.likes} likes{' '}
+        <ActionButton onClick={handleLike}>like</ActionButton>
+      </BlogLikes>
+      <BlogAuthor>added by {blog.user.name}</BlogAuthor>
       {user.username === blog.user.username && (
-        <button onClick={handleDelete}>delete</button>
+        <ActionButton onClick={handleDelete}>delete</ActionButton>
       )}
 
       <h3>Comments</h3>
-      <ul>
+      <CommentList>
         {(blog.comments || []).map((comment, index) => (
-          <li key={index}>{comment}</li>
+          <CommentItem key={index}>{comment}</CommentItem>
         ))}
-      </ul>
+      </CommentList>
 
       <form onSubmit={handleAddComment}>
-        <input
+        <CommentInput
           type='text'
           value={comment}
           onChange={e => setComment(e.target.value)}
-          placeholder='Add a comment'
+          placeholder='Write a comment...'
         />
-        <button type='submit'>Add comment</button>
+        <ActionButton type='submit'>Add comment</ActionButton>
       </form>
-    </div>
+    </BlogDetailContainer>
   );
 };
 

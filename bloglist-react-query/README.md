@@ -103,7 +103,23 @@ that the application receives from the backend.
 An appropriate mechanism for adding comments to a blog post would be an HTTP
 POST request to the _api/blogs/:id/comments_ endpoint.
 
-7.19: Comments, step 2 Extend your application so that users can add comments to
-blog posts from the frontend:
+## 7.19: Comments, step 2
+
+Extend your application so that users can add comments to blog posts from the
+frontend:
 
 ![commenting](./assets/49.png)
+
+## 7.20: Styles, step 1
+
+Improve the appearance of your application by applying one of the methods shown
+in the course material.
+
+## 7.21: Styles, step 2
+
+You can mark this exercise as finished if you use an hour or more for styling
+your application.
+
+This was the last exercise for this part of the course and it's time to push
+your code to GitHub and mark all of your finished exercises to the
+[exercise submission system](https://studies.cs.helsinki.fi/stats/courses/fullstackopen).

@@ -1,11 +1,29 @@
 import { useState, useImperativeHandle, forwardRef } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+const ToggleButton = styled.button`
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const Container = styled.div`
+  max-width: 800px;
+  margin: 17px auto;
+  text-align: center;
+`;
 
 const Togglable = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
-
-  const hideWhenVisible = { display: visible ? 'none' : '' };
-  const showWhenVisible = { display: visible ? '' : 'none' };
 
   const toggleVisibility = () => {
     setVisible(!visible);
@@ -18,15 +36,19 @@ const Togglable = forwardRef((props, ref) => {
   });
 
   return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
-        {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
-      </div>
-    </div>
+    <Container>
+      {!visible && (
+        <ToggleButton onClick={toggleVisibility}>
+          {props.buttonLabel}
+        </ToggleButton>
+      )}
+      {visible && (
+        <div>
+          {props.children}
+          <ToggleButton onClick={toggleVisibility}>Cancel</ToggleButton>
+        </div>
+      )}
+    </Container>
   );
 });
 
